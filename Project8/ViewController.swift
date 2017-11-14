@@ -4,7 +4,7 @@
 //
 //  Created by Frank Wolff on 06/11/2017.
 //  Copyright © 2017 Frank Wolff. All rights reserved.
-//
+//  Last page visited: https://www.hackingwithswift.com/read/8/3/loading-a-level-addtarget-and-shuffling-arrays
 
 import UIKit
 import GameplayKit
@@ -25,7 +25,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
 		super.viewDidLoad()
-        
         for subview in view.subviews where subview.tag == 1001 {
             let btn = subview as! UIButton
             letterButtons.append(btn)
@@ -36,17 +35,19 @@ class ViewController: UIViewController {
     
     func loadLevel() {
         var clueString = ""
-        var solutionString = ""
-        var letterBits = [String]()
-        
-        if let levelFilePatch = Bundle.main.path(forResource: "level\(level)", ofType: "txt") {
-            if let levelContents = try? String(contentsOfFile: levelFilePatch) {
-                var lines = levelContents.components(separatedBy: "\n")
-                lines = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: lines) as! [String]
-                
-                for (index, line) in lines.enumerated() {
+		var solutionString = ""
+		var letterBits = [String]()
+		
+		if let levelFilePath = Bundle.main.path(forResource: "level\(level)", ofType: "txt") {
+			if let levelContents = try? String(contentsOfFile: levelFilePath) {
+				var lines = levelContents.components(separatedBy: "\n")
+				lines = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: lines) as! [String]
+				
+				for (index, line) in lines.enumerated() {
 					let parts = line.components(separatedBy: ": ")
 					let answer = parts[0]
+					// De fix
+					if answer == "" { break }
 					let clue = parts[1]
 					
 					clueString += "\(index + 1). \(clue)\n"
@@ -57,9 +58,9 @@ class ViewController: UIViewController {
 					
 					let bits = answer.components(separatedBy: "|")
 					letterBits += bits
-                }
-            }
-        }
+				}
+			}
+		}
 		cluesLabel.text = clueString.trimmingCharacters(in: .whitespacesAndNewlines)
 		answersLabel.text = solutionString.trimmingCharacters(in: .whitespacesAndNewlines)
 		
